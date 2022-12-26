@@ -6,6 +6,11 @@ const helmet = require('helmet')
 const xss = require('xss-clean')
 const cors = require('cors')
 
+//Swagger
+const swagger = require('swagger-ui-express')
+const YAML = require('yamljs')
+const swaggerDocument = YAML.load('./swagger.yaml')
+
 const express = require('express')
 const app = express()
 
@@ -40,6 +45,10 @@ app.use(express.json())
 app.use('/api/v1/jobs', authMiddleware, jobsRouter)
 app.use('/api/v1/auth', authRouter)
 
+app.get('/', (req, res) => {
+  res.send('<h1>API Documentation</h1><a href="/api-docs">Docementation</a>')
+})
+app.use('/api-docs', swagger.serve, swagger.setup(swaggerDocument))
 app.use(notFoundMiddleware)
 app.use(errorHandlerMiddleware)
 
